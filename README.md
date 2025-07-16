@@ -1,7 +1,20 @@
-# AADL-LLM-Verifier
-The tool detects the hallucionation during model transformation of AADL model
-# Example 
-## Source AADL Model (S)
+# 🔎 AADL-LLM-Verifier
+
+**AADL-LLM-Verifier** is a research prototype that detects *hallucinations* introduced during the transformation of AADL (Architecture Analysis and Design Language) models, particularly when transformations are generated using Large Language Models (LLMs). It leverages Petri net semantics to ensure behavioral consistency and transformation validity.
+
+---
+
+## 🎯 Objective
+
+- ✅ Verify correctness of LLM-generated transformations.
+- 🚫 Detect unjustified insertions (hallucinations) in the model.
+- 🧠 Use formal models (Petri nets) to compare semantics before and after transformation.
+
+---
+
+## 📘 Source AADL Model (S)
+
+```aadl
 system SafeCycleSystem
 end SafeCycleSystem;
 
@@ -39,6 +52,7 @@ end Actuator;
 
 thread implementation Actuator.impl
 end Actuator.impl;
+```
 
 ## Transformation Rules
 
@@ -50,6 +64,8 @@ end Actuator.impl;
 | R4      | System Implementation Switch | Defines a new `system implementation` using additional components.          |
 
 ## Transformed AADL model (T)
+
+```aadl
 system SafeCycleSystem
 end SafeCycleSystem;
 
@@ -98,9 +114,20 @@ end Monitor;
 
 thread implementation Monitor.impl
 end Monitor.impl;
-
+```
 ## Source Petri net Model
+### Petri Net Model: Source AADL System
 
+This Petri net models the basic **Sensor → Processor → Actuator** flow from the source AADL model. It ensures sequential execution and token-safe transitions.
+
+### 📊 Petri Net Diagram (DOT)
+
+You can render this graph using [Graphviz](https://graphviz.org/) or online tools like [WebGraphviz](https://dreampuf.github.io/GraphvizOnline/).
+
+<details>
+<summary>Click to expand DOT code</summary>
+
+```dot
 digraph SourcePetriNet {
     rankdir=LR;
 
@@ -127,9 +154,21 @@ digraph SourcePetriNet {
     a_ready -> a_exec;
     a_exec -> s_ready;
 }
+```
 
 ## Tranforemd Petri net model 
+### Petri Net Model: Transformed AADL System
 
+This Petri net models the **transformed AADL system** with a fault-monitoring mechanism and a safe-mode reinitialization. It extends the original sensor–processor–actuator pipeline with runtime monitoring support.
+
+### 📊 Petri Net Diagram (DOT)
+
+You can render this extended model using [Graphviz](https://graphviz.org/) or online tools like [WebGraphviz](https://dreampuf.github.io/GraphvizOnline/).
+
+<details>
+<summary>Click to expand DOT code</summary>
+
+```dot
 digraph TransformedPetriNet {
     rankdir=LR;
 
@@ -165,5 +204,5 @@ digraph TransformedPetriNet {
     fault_detected -> switch_mode;
     switch_mode -> s_ready;
 }
-
+```
 
